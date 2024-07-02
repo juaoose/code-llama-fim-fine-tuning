@@ -4,11 +4,11 @@ This repository allows you to fine-tune the Code Llama model to fill in the midd
 
 ## How to use
 
-### Prepare dataset and upload it to Hugging Face Hub.
+### Prepare a dataset and upload it to Hugging Face Hub.
 
 The dataset must contain a column "content" with the code files you want to train the model on.
 
-Example dataset with OpenAPI definitions is available at [here](https://huggingface.co/datasets/BohdanPetryshyn/openapi-completion-refined).
+An example dataset with OpenAPI definitions is available at [here](https://huggingface.co/datasets/BohdanPetryshyn/openapi-completion-refined).
 
 ### Train the model using Google Colab
 
@@ -26,7 +26,7 @@ The merged model can be used with the [Hugging Face Inference Endpoints](https:/
 
 ## Related Publication
 
-This repository contains the code and data for the paper "Optimizing Large Language Models for OpenAPI Code Completion" by [Bohdan Petryshyn](https://orcid.org/0009-0003-4030-4842) and [Mantas Lukoševičius](https://orcid.org/0000-0001-7963-285X).
+This repository contains the code and data for the paper ["Optimizing Large Language Models for OpenAPI Code Completion"](https://arxiv.org/abs/2405.15729) by [Bohdan Petryshyn](https://orcid.org/0009-0003-4030-4842) and [Mantas Lukoševičius](https://orcid.org/0000-0001-7963-285X).
 
 ### Abstract
 
