@@ -128,7 +128,8 @@ def chars_token_ratio(dataset, tokenizer, data_column, nb_examples=400):
 
 
 def create_datasets(tokenizer, args, seed):
-    dataset = load_dataset(args.dataset_name, split=args.splits)
+    # dataset = load_dataset(args.dataset_name, split=args.splits)
+    dataset = load_dataset('json', data_files='rtchat-data.json', split='train')
     dataset = dataset.train_test_split(
         test_size=args.test_size, seed=seed, shuffle=True
     )
