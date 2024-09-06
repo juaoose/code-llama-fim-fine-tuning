@@ -19,6 +19,8 @@ from transformers import (
     BitsAndBytesConfig,
 )
 
+from tokenizer import Tokenizer
+
 from peft import (
     LoraConfig,
     get_peft_model,
@@ -122,7 +124,7 @@ def chars_token_ratio(dataset, tokenizer, data_column, nb_examples=400):
     total_characters, total_tokens = 0, 0
     for _, example in tqdm(zip(range(nb_examples), iter(dataset)), total=nb_examples):
         total_characters += len(example[data_column])
-        total_tokens += len(tokenizer(example[data_column]).tokens())
+        total_tokens += len(tokenizer.encode(example[data_column], bos=True, eos=False))
 
     return total_characters / total_tokens
 
@@ -326,7 +328,8 @@ def main(model_args, data_args, training_args):
     set_seed(training_args.seed)
 
     # load the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    # tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    tokenizer = Tokenizer("/root/development/llama3/Meta-Llama-3-8B/tokenizer.model")
 
     # load the datasets
     train_dataset, eval_dataset = create_datasets(

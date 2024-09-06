@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 
 # Adapted from https://github.com/bigcode-project/Megatron-LM/blob/6c4bf908df8fd86b4977f54bf5b8bd4b521003d1/megatron/data/gpt_dataset.py#L491
@@ -21,7 +22,7 @@ def permute_char_level(
 
     if np_rng.binomial(1, fim_rate):  # sample bernoulli dist
 
-        contents = tokenizer.decode(sample, skip_special_tokens=True)
+        contents = tokenizer.decode(sample)
 
         try:
             # A boundary can be =0 (prefix will be empty)
@@ -41,20 +42,20 @@ def permute_char_level(
         # By adding and removing the <MID> token, we ensure that the tokenizer doesn't add extra leading whitespace
         # The prefix whitespace doesn't matter as also mentioned in the Code Llama paper
         special_token = "▔"
-        special_token_id = tokenizer.encode(
-            special_token, add_special_tokens=False, return_tensors="np"
-        )[0]
+        special_token_id = torch.tensor(tokenizer.encode(
+            special_token, bos=True, eos=False
+        ))
         special_token_id_len = special_token_id.shape[0]
 
-        prefix = tokenizer.encode(
-            prefix, add_special_tokens=False, return_tensors="np"
-        )[0]
-        middle = tokenizer.encode(
-            special_token + middle, add_special_tokens=False, return_tensors="np"
-        )[0][special_token_id_len:]
-        suffix = tokenizer.encode(
-            special_token + suffix, add_special_tokens=False, return_tensors="np"
-        )[0][special_token_id_len:]
+        prefix = torch.tensor(tokenizer.encode(
+            prefix, bos=True, eos=False
+        ))
+        middle = torch.tensor(tokenizer.encode(
+            special_token + middle, bos=True, eos=False
+        ))[special_token_id_len:]
+        suffix = torch.tensor(tokenizer.encode(
+            special_token + suffix,bos=False, eos=True
+        ))[special_token_id_len:]
 
         # here we truncate each given segment to fit the same length as it was before
         # A consequence is that we never reach the end of a file?

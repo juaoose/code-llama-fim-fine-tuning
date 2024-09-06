@@ -40,9 +40,9 @@ class ConstantLengthDataset(IterableDataset):
         shuffle=False,
     ):
         self.tokenizer = tokenizer
-        self.concat_token_id = tokenizer.eos_token_id
+        self.concat_token_id = tokenizer.eos_id
         self.eot_token_id = tokenizer.encode(
-            tokenizer.eot_token, add_special_tokens=False
+            "▁<EOT>", eos=False, bos= False
         )[0]
         self.dataset = dataset
         self.seq_length = seq_length
@@ -59,7 +59,7 @@ class ConstantLengthDataset(IterableDataset):
         self.fim_spm_rate = fim_spm_rate
         self.seed = seed
         self.shuffle = shuffle
-        self.bos_token_id = self.tokenizer.bos_token_id
+        self.bos_token_id = self.tokenizer.bos_id
         self.suffix_tok_id = self.tokenizer.suffix_id
         self.prefix_tok_id = self.tokenizer.prefix_id
         self.middle_tok_id = self.tokenizer.middle_id
@@ -108,9 +108,10 @@ class ConstantLengthDataset(IterableDataset):
                     else:
                         more_examples = False
                         break
-            tokenized_inputs = self.tokenizer(
-                buffer, truncation=False, add_special_tokens=False
-            )["input_ids"]
+            tokenized_inputs = [self.tokenizer.encode(t, bos=True, eos=False) for t in buffer]
+            # tokenized_inputs = self.tokenizer(
+            #     buffer
+            # )["input_ids"]
             tokenized_inputs = functools.reduce(
                 lambda x, y: np.concatenate([x, [self.concat_token_id], y]),
                 tokenized_inputs,
