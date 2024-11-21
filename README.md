@@ -67,7 +67,7 @@ python3 train.py \
   --weight_decay 0.1 \
   --warmup_ratio 0.05 \
   --max_grad_norm 1.0 \
-  --output_dir "tmp-codellama-7b-openapi-completion-ctx-lvl-fim-05-spm-2048" \
+  --output_dir "llama3" \
   --per_device_train_batch_size 4 \
   --per_device_eval_batch_size 4 \
   --gradient_accumulation_steps 8 \
@@ -75,10 +75,10 @@ python3 train.py \
   --use_reentrant True \
   --dataset_text_field "content" \
   --test_size 0.1 \
-  --fim_rate 0.9 \
+  --fim_rate 0 \
   --fim_spm_rate 0.5 \
   --use_peft_lora True \
-  --lora_r 32 \
+  --lora_r 16 \
   --lora_alpha 64 \
   --lora_dropout 0.1 \
   --lora_target_modules "all-linear" \
@@ -86,6 +86,88 @@ python3 train.py \
   --use_nested_quant True \
   --bnb_4bit_compute_dtype "bfloat16" \
   --use_flash_attn True
+
+python3 train.py \
+  --model_name_or_path "meta-llama/Llama-3.1-8B" \
+  --dataset_name "BohdanPetryshyn/openapi-completion-refined" \
+  --splits "train" \
+  --max_seq_len 2048 \
+  --max_steps 100 \
+  --save_steps 100 \
+  --eval_steps 100 \
+  --logging_steps 5 \
+  --log_level "info" \
+  --logging_strategy "steps" \
+  --evaluation_strategy "steps" \
+  --save_strategy "steps" \
+  --hub_private_repo False \
+  --hub_strategy "every_save" \
+  --bf16 True \
+  --learning_rate 2e-4 \
+  --lr_scheduler_type "cosine" \
+  --weight_decay 0.1 \
+  --warmup_ratio 0.05 \
+  --max_grad_norm 1.0 \
+  --output_dir "llama31" \
+  --per_device_train_batch_size 2 \
+  --per_device_eval_batch_size 4 \
+  --gradient_accumulation_steps 8 \
+  --gradient_checkpointing True \
+  --use_reentrant True \
+  --dataset_text_field "content" \
+  --test_size 0.1 \
+  --fim_rate 0 \
+  --fim_spm_rate 0 \
+  --use_peft_lora True \
+  --lora_r 16 \
+  --lora_alpha 64 \
+  --lora_dropout 0.1 \
+  --lora_target_modules "all-linear" \
+  --use_4bit_quantization True \
+  --use_nested_quant True \
+  --bnb_4bit_compute_dtype "bfloat16" \
+  --use_flash_attn True
+
+python3 train.py \
+  --model_name_or_path "meta-llama/Llama-3.2-11B-Vision" \
+  --dataset_name "BohdanPetryshyn/openapi-completion-refined" \
+  --splits "train" \
+  --max_seq_len 2048 \
+  --max_steps 100 \
+  --save_steps 100 \
+  --eval_steps 100 \
+  --logging_steps 5 \
+  --log_level "info" \
+  --logging_strategy "steps" \
+  --evaluation_strategy "steps" \
+  --save_strategy "steps" \
+  --hub_private_repo False \
+  --hub_strategy "every_save" \
+  --bf16 True \
+  --learning_rate 2e-4 \
+  --lr_scheduler_type "cosine" \
+  --weight_decay 0.1 \
+  --warmup_ratio 0.05 \
+  --max_grad_norm 1.0 \
+  --output_dir "llama32" \
+  --per_device_train_batch_size 2 \
+  --per_device_eval_batch_size 4 \
+  --gradient_accumulation_steps 8 \
+  --gradient_checkpointing True \
+  --use_reentrant True \
+  --dataset_text_field "content" \
+  --test_size 0.1 \
+  --fim_rate 0 \
+  --fim_spm_rate 0 \
+  --use_peft_lora True \
+  --lora_r 16 \
+  --lora_alpha 64 \
+  --lora_dropout 0.1 \
+  --lora_target_modules "all-linear" \
+  --use_4bit_quantization True \
+  --use_nested_quant True \
+  --bnb_4bit_compute_dtype "bfloat16" \
+  --use_flash_attn False
 ```
 
 This repository allows you to fine-tune the Code Llama model to fill in the middle on your own dataset by mirroring the process described in the original Code Llama [paper](https://arxiv.org/abs/2308.12950). Infilling (filling in the middle) models are optimal for code completion tasks, where the model is given a prefix and a suffix and is asked to fill the middle. In the "_Optimizing Large Language Models for OpenAPI Code Completion_" [paper](https://arxiv.org/abs/2405.15729), we improved Code Llama performance in OpenAPI completion by **28.6%** outperforming GitHub Copilot by **55.2%**.

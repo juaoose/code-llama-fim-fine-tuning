@@ -109,7 +109,7 @@ class DataTrainingArguments:
     )
     max_seq_length: Optional[int] = field(default=4096)
     test_size: Optional[float] = field(default=0.1)
-    fim_rate: Optional[float] = field(default=0.5)
+    fim_rate: Optional[float] = field(default=0.0)
     fim_spm_rate: Optional[float] = field(default=0.5)
     splits: Optional[str] = field(
         default="train",
@@ -124,7 +124,7 @@ def chars_token_ratio(dataset, tokenizer, data_column, nb_examples=400):
     total_characters, total_tokens = 0, 0
     for _, example in tqdm(zip(range(nb_examples), iter(dataset)), total=nb_examples):
         total_characters += len(example[data_column])
-        total_tokens += len(tokenizer.encode(example[data_column], bos=True, eos=False))
+        total_tokens += len(tokenizer.encode(example[data_column]))
 
     return total_characters / total_tokens
 
@@ -132,6 +132,7 @@ def chars_token_ratio(dataset, tokenizer, data_column, nb_examples=400):
 def create_datasets(tokenizer, args, seed):
     # dataset = load_dataset(args.dataset_name, split=args.splits)
     dataset = load_dataset('json', data_files='rtchat-data.json', split='train')
+    # dataset = load_dataset('json', data_files='rtchat-data-small.json', split='train[:10%]')
     dataset = dataset.train_test_split(
         test_size=args.test_size, seed=seed, shuffle=True
     )
@@ -328,8 +329,8 @@ def main(model_args, data_args, training_args):
     set_seed(training_args.seed)
 
     # load the tokenizer
-    # tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
-    tokenizer = Tokenizer("/root/development/llama3/Meta-Llama-3-8B/tokenizer.model")
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    # tokenizer = Tokenizer("/root/development/llama3/Meta-Llama-3-8B/tokenizer.model")
 
     # load the datasets
     train_dataset, eval_dataset = create_datasets(
